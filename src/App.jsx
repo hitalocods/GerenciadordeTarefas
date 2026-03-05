@@ -29,15 +29,16 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("todas");
 
-  // 🔐 Observa usuário logado
+  // 🔐 Observa login
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
+
     return () => unsubscribe();
   }, []);
 
-  // 🔥 Buscar tarefas do usuário no Firestore
+  // 🔥 Busca tarefas do usuário
   useEffect(() => {
     if (!user) return;
 
@@ -51,6 +52,7 @@ function App() {
         id: doc.id,
         ...doc.data(),
       }));
+
       setTasks(tasksData);
     });
 
@@ -71,7 +73,7 @@ function App() {
     await deleteDoc(doc(db, "tasks", id));
   }
 
-  // ✅ Concluir
+  // ✅ Alternar concluída
   async function toggleTask(id, completed) {
     await updateDoc(doc(db, "tasks", id), {
       completed: !completed,
@@ -102,21 +104,26 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white md:flex">
-      
+
+      {/* Sidebar */}
       <aside className="w-64 bg-slate-900 p-6 hidden md:flex flex-col gap-6">
-        <h1 className="text-2xl font-bold">SmartTasks</h1>
+        <h1 className="text-2xl font-bold">Gerenciador De Tarefas</h1>
         <div className="flex items-center gap-2 text-gray-400">
           <LayoutDashboard size={18} />
           Dashboard
         </div>
       </aside>
 
+      {/* Main */}
       <main className="flex-1 p-4 md:p-8 space-y-6 md:space-y-8 max-w-6xl mx-auto">
-        
+
+        {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-3xl font-bold">Bem-vindo 👋</h2>
-            <p className="text-gray-400">{user.email}</p>
+            <p className="text-gray-400">
+              {user.displayName || user.email}
+            </p>
           </div>
 
           <button
@@ -144,7 +151,7 @@ function App() {
           </div>
         </div>
 
-        {/* Cards */}
+        {/* Cards filtro */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           <Card
             icon={<LayoutDashboard size={20} />}
@@ -179,7 +186,10 @@ function App() {
           />
         </div>
 
+        {/* Form */}
         <TaskForm onAddTask={addTask} />
+
+        {/* Lista */}
         <TaskList
           tasks={filteredTasks}
           onDeleteTask={deleteTask}
@@ -195,16 +205,16 @@ function Card({ icon, label, value, color, onClick, active }) {
     <motion.div
       whileHover={{ scale: 1.05 }}
       onClick={onClick}
-      className={`p-5 rounded-2xl shadow-lg flex flex-col gap-3 cursor-pointer transition ${
-        active
+      className={`p-5 rounded-2xl shadow-lg flex flex-col gap-3 cursor-pointer transition ${active
           ? "bg-indigo-600/20 border border-indigo-500"
           : "bg-slate-900 hover:bg-slate-800"
-      }`}
+        }`}
     >
       <div className="text-gray-400 flex items-center gap-2">
         {icon}
         {label}
       </div>
+
       <div className={`text-2xl font-bold ${color || "text-white"}`}>
         {value}
       </div>

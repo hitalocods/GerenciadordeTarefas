@@ -20,9 +20,10 @@ function TaskList({ tasks, onDeleteTask, onToggleTask }) {
           className="bg-slate-800 p-4 rounded-xl flex items-center justify-between"
         >
           <div
-            onClick={() => onToggleTask(task.id)}
+            onClick={() => onToggleTask(task.id, task.completed)}
             className="flex items-center gap-3 cursor-pointer"
           >
+            {/* Bolinha prioridade */}
             <div
               className={`w-3 h-3 rounded-full ${
                 task.priority === "alta"
@@ -33,6 +34,7 @@ function TaskList({ tasks, onDeleteTask, onToggleTask }) {
               }`}
             />
 
+            {/* Texto */}
             <span
               className={`text-sm ${
                 task.completed
@@ -44,6 +46,7 @@ function TaskList({ tasks, onDeleteTask, onToggleTask }) {
             </span>
           </div>
 
+          {/* Botão deletar */}
           <button
             onClick={() => onDeleteTask(task.id)}
             className="text-red-400 hover:text-red-300 transition"

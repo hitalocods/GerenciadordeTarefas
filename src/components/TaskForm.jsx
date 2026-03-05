@@ -2,50 +2,53 @@ import { useState } from "react";
 
 function TaskForm({ onAddTask }) {
   const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState("baixa");
+  const [priority, setPriority] = useState("media");
 
   function handleSubmit(e) {
     e.preventDefault();
 
     if (!title.trim()) return;
 
-    const newTask = {
-      id: crypto.randomUUID(),
+    onAddTask({
       title,
       priority,
-      completed: false,
-    };
+    });
 
-    onAddTask(newTask);
     setTitle("");
+    setPriority("media");
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-slate-900 p-4 md:p-6 rounded-2xl flex flex-col md:flex-row gap-4"
-    >
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Nova tarefa..."
-        className="flex-1 bg-slate-800 p-3 rounded-xl text-white"
-      />
+    <div className="bg-slate-900 p-6 rounded-2xl">
+      <form onSubmit={handleSubmit} className="space-y-4">
 
-      <select
-        value={priority}
-        onChange={(e) => setPriority(e.target.value)}
-        className="bg-slate-800 p-3 rounded-xl"
-      >
-        <option value="baixa">Baixa</option>
-        <option value="media">Média</option>
-        <option value="alta">Alta</option>
-      </select>
+        <input
+          type="text"
+          placeholder="Nova tarefa..."
+          className="w-full p-3 rounded-xl bg-slate-800 text-white"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
-      <button className="bg-indigo-600 px-4 rounded-xl">
-        Adicionar
-      </button>
-    </form>
+        <select
+          className="w-full p-3 rounded-xl bg-slate-800 text-white"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+        >
+          <option value="alta">Alta</option>
+          <option value="media">Média</option>
+          <option value="baixa">Baixa</option>
+        </select>
+
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 py-3 rounded-xl hover:bg-indigo-500 transition"
+        >
+          Adicionar Tarefa
+        </button>
+
+      </form>
+    </div>
   );
 }
 
